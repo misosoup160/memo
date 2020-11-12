@@ -1,0 +1,112 @@
+body {
+  font-size: 16px;
+  font-family: 'M PLUS 1p', sans-serif;
+  color: #34495e;
+  line-height: 1.5;
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 20px;
+  /* background: #eee; */
+}
+
+main .container {
+  padding: 40px 20px;
+}
+
+li {
+  line-height: 1.7;
+  margin-bottom: 3px
+}
+a {
+  text-decoration: none;
+  color: tomato;
+  border-bottom: 1px dashed tomato;
+  padding-bottom: 1px;
+}
+a:hover {
+  border-bottom: none;
+}
+
+.btn {
+  display: block;
+  width: 150px;
+  height: 40px;
+  border-radius: 8px;
+  border: 2px solid #34495e;
+  color: #34495e;
+  font-weight: bold;
+  line-height: 36px;
+  text-align: center;
+}
+
+input[type=submit] {
+  cursor: pointer;
+  margin: 40px auto;
+  background: white;
+}
+
+.btn:hover {
+  background: #D7E0E8;
+  border: 2px solid #34495e;
+}
+.show input[type=submit] {
+  border: 2px solid tomato;
+  color: tomato;
+}
+.show input[type=submit]:hover {
+  background: #FFE0DB;
+}
+
+input[type=text],
+textarea {
+  display: block;
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #333;
+}
+textarea {
+  height: 150px;
+  line-height: 1.5;
+}
+
+
+.btn-container {
+  display: flex;
+  justify-content: space-around;
+  margin: 40px 0;
+}
+.btn-container input[type=submit] {
+  margin: 0;
+}
+
+.title {
+  height: 80px;
+  background: #34495e;
+}
+.title h1 {
+  margin: 0;
+  line-height: 80px;
+}
+.title a {
+  color: white;
+  border: none;
+}
+
+.memo-title {
+  margin-top: 0;
+}
+.memo-desc {
+  height: 150px;
+  overflow-y: scroll;
+  white-space: pre-wrap;
+}

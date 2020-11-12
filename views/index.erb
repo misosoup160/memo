@@ -1,0 +1,11 @@
+<section class="top">
+  <div>
+    <a href="/memos/new" class="btn">追加</a>
+  </div>
+
+  <ul>
+    <% @comments.each_with_index do |comment, i| %>
+    <li><a href="memos/<%= i %>"><%= comment['title'] %></a></li>
+    <% end %>
+  </ul>
+</section>
