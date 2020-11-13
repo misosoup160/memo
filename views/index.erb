@@ -4,8 +4,8 @@
   </div>
 
   <ul>
-    <% @comments.each do |comment| %>
-    <li><a href="memos/<%= comment['id'] %>"><%= comment['title'] %></a></li>
+    <% @memos.each do |memo| %>
+    <li><a href="memos/<%= memo['memo_id'] %>"><%= memo['memo_title'] %></a></li>
     <% end %>
   </ul>
 </section>

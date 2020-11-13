@@ -3,48 +3,17 @@
 require 'sinatra'
 require 'sinatra/reloader'
 require 'json'
-require 'securerandom'
+require 'pg'
 
-def new_data(params)
-  openfile
-  memodata = {
-    id: SecureRandom.uuid,
-    title: params['title'],
-    body: params['body']
-  }
-  @comments << memodata
-  dumpfile
-end
-
-def select_data(id)
-  openfile
-  @comment = @comments.find { |comment| comment['id'] == id }
-end
-
-def edit_data(id)
-  openfile
-  @comment = @comments.find { |comment| comment['id'] == id }
-  @comment['title'] = params['title']
-  @comment['body'] = params['body']
-  dumpfile
-end
-
-def delete_data(id)
-  openfile
-  @comments.delete_if { |comment| comment['id'] == id }
-  dumpfile
-end
-
-def openfile
-  @comments = File.open('lib/memo.json') do |f|
-    JSON.parse(f.read)
+def connect_data(sql, values = nil)
+  connect = PG.connect(host: 'localhost', user: 'postgres', password: '', dbname: 'memoapp', port: '5432')
+  if sql.include?('SELECT')
+    results = connect.exec(sql, values)
+    @memos = results
+  else
+    connect.exec(sql, values)
   end
-end
-
-def dumpfile
-  File.open('lib/memo.json', 'w') do |f|
-    JSON.dump(@comments, f)
-  end
+  connect.finish
 end
 
 def redirect_to_top
@@ -57,7 +26,8 @@ end
 
 get '/memos' do
   @title = 'memo top'
-  openfile
+  @sql = 'SELECT * FROM Memos'
+  connect_data(@sql)
   erb :index
 end
 
@@ -68,35 +38,44 @@ end
 
 get '/memos/:id' do
   @title = 'show memo'
-  id = params['id']
-  select_data(id)
-  return 404 unless @comment
-
+  @id = params['id']
+  @sql = 'SELECT memo_title, memo_body FROM Memos WHERE memo_id = $1'
+  connect_data(@sql, [@id])
+  @title = @memos[0]['memo_title']
+  @body = @memos[0]['memo_body']
   erb :showmemo
 end
 
 get '/memos/:id/edit' do
   @title = 'edit memo'
-  id = params['id']
-  select_data(id)
-  return 404 unless @comment
-
+  @id = params['id']
+  @sql = 'SELECT memo_title, memo_body FROM Memos WHERE memo_id = $1'
+  connect_data(@sql, [@id])
+  @title = @memos[0]['memo_title']
+  @body = @memos[0]['memo_body']
   erb :editmemo
 end
 
 post '/memos' do
-  new_data(params) unless params['title'].match(/^\s*$/)
+  @title = params['title']
+  @body = params['body']
+  @sql = 'INSERT INTO Memos (memo_title, memo_body) VALUES ($1, $2)'
+  connect_data(@sql, [@title, @body]) unless @title.match(/^\s*$/)
   redirect_to_top
 end
 
 delete '/memos/:id' do
-  id = params['id']
-  delete_data(id)
+  @id = params['id']
+  @sql = 'DELETE FROM Memos WHERE memo_id = $1'
+  connect_data(@sql, [@id])
   redirect_to_top
 end
 
 patch '/memos/:id' do
-  id = params['id']
-  edit_data(id)
+  @id = params['id']
+  @title = params['title']
+  @body = params['body']
+  @sql = 'UPDATE Memos SET memo_title = $1, memo_body = $2 WHERE memo_id = $3'
+  connect_data(@sql, [@title, @body, @id])
   redirect_to_top
 end
