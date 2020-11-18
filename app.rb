@@ -5,27 +5,27 @@ require 'sinatra/reloader'
 require 'json'
 require 'securerandom'
 
-def set_data(params)
+def new_data(params)
   openfile
-    memodata = {
-      id: SecureRandom.uuid,
-      title: params['title'],
-      body: params['body']
-    }
-    @comments << memodata
-    dumpfile
+  memodata = {
+    id: SecureRandom.uuid,
+    title: params['title'],
+    body: params['body']
+  }
+  @comments << memodata
+  dumpfile
 end
 
 def select_data(id)
   openfile
-  @comment = @comments.select {|comment| comment['id'] == @id }[0]
+  @comment = @comments.select { |comment| comment['id'] == id }[0]
   @title = @comment['title']
   @body = @comment['body']
 end
 
 def edit_data(id)
   openfile
-  @comment = @comments.select {|comment| comment['id'] == id }[0]
+  @comment = @comments.select { |comment| comment['id'] == id }[0]
   @comment['title'] = params['title']
   @comment['body'] = params['body']
   dumpfile
@@ -79,9 +79,7 @@ get '/memos/:id/edit' do
 end
 
 post '/memos' do
-  unless params['title'].match(/^\s*$/)
-    set_data(params)
-  end
+  new_data(params) unless params['title'].match(/^\s*$/)
   redirect_to_top
 end
 
