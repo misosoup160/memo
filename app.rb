@@ -5,9 +5,37 @@ require 'sinatra/reloader'
 require 'json'
 require 'securerandom'
 
-# configure do
-#   enable :method_override
-# end
+def set_data(params)
+  openfile
+    memodata = {
+      id: SecureRandom.uuid,
+      title: params['title'],
+      body: params['body']
+    }
+    @comments << memodata
+    dumpfile
+end
+
+def select_data(id)
+  openfile
+  @comment = @comments.select {|comment| comment['id'] == @id }[0]
+  @title = @comment['title']
+  @body = @comment['body']
+end
+
+def edit_data(id)
+  openfile
+  @comment = @comments.select {|comment| comment['id'] == id }[0]
+  @comment['title'] = params['title']
+  @comment['body'] = params['body']
+  dumpfile
+end
+
+def delete_data(id)
+  openfile
+  @comments.delete_if { |comment| comment['id'] == id }
+  dumpfile
+end
 
 def openfile
   @comments = File.open('lib/memo.json') do |f|
@@ -39,51 +67,32 @@ end
 get '/memos/:id' do
   @title = 'show memo'
   @id = params['id']
-  openfile
-  @comment = @comments.select {|comment| comment['id'] == @id }[0]
-  @title = @comment['title']
-  @body = @comment['body']
+  select_data(@id)
   erb :showmemo
 end
 
 get '/memos/:id/edit' do
   @title = 'edit memo'
   @id = params['id']
-  openfile
-  @comment = @comments.select {|comment| comment['id'] == @id }[0]
-  @title = @comment['title']
-  @body = @comment['body']
+  select_data(@id)
   erb :editmemo
 end
 
 post '/memos' do
   unless params['title'].match(/^\s*$/)
-    openfile
-    memodata = {
-      id: SecureRandom.uuid,
-      title: params['title'],
-      body: params['body']
-    }
-    @comments << memodata
-    dumpfile
+    set_data(params)
   end
   redirect_to_top
 end
 
 delete '/memos/:id' do
   @id = params['id']
-  openfile
-  @comments.delete_if { |comment| comment['id'] == @id }
-  dumpfile
+  delete_data(@id)
   redirect_to_top
 end
 
 patch '/memos/:id' do
   @id = params['id']
-  openfile
-  @comment = @comments.select {|comment| comment['id'] == @id }[0]
-  @comment['title'] = params['title']
-  @comment['body'] = params['body']
-  dumpfile
+  edit_data(@id)
   redirect_to_top
 end
