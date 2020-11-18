@@ -18,14 +18,12 @@ end
 
 def select_data(id)
   openfile
-  @comment = @comments.select { |comment| comment['id'] == id }[0]
-  @title = @comment['title']
-  @body = @comment['body']
+  @comment = @comments.find { |comment| comment['id'] == id }
 end
 
 def edit_data(id)
   openfile
-  @comment = @comments.select { |comment| comment['id'] == id }[0]
+  @comment = @comments.find { |comment| comment['id'] == id }
   @comment['title'] = params['title']
   @comment['body'] = params['body']
   dumpfile
@@ -66,15 +64,15 @@ end
 
 get '/memos/:id' do
   @title = 'show memo'
-  @id = params['id']
-  select_data(@id)
+  id = params['id']
+  select_data(id)
   erb :showmemo
 end
 
 get '/memos/:id/edit' do
   @title = 'edit memo'
-  @id = params['id']
-  select_data(@id)
+  id = params['id']
+  select_data(id)
   erb :editmemo
 end
 
@@ -84,13 +82,13 @@ post '/memos' do
 end
 
 delete '/memos/:id' do
-  @id = params['id']
-  delete_data(@id)
+  id = params['id']
+  delete_data(id)
   redirect_to_top
 end
 
 patch '/memos/:id' do
-  @id = params['id']
-  edit_data(@id)
+  id = params['id']
+  edit_data(id)
   redirect_to_top
 end
