@@ -1,6 +1,6 @@
 <article class="show">
-  <h2 class="memo-title"><%= Rack::Utils.escape_html(@comments[@id.to_i]['title']) %></h2>
-  <div class="memo-desc"><%= Rack::Utils.escape_html(@comments[@id.to_i]['body']) %></div>
+  <h2 class="memo-title"><%= Rack::Utils.escape_html(@title) %></h2>
+  <div class="memo-desc"><%= Rack::Utils.escape_html(@body) %></div>
 <div class="btn-container">
   <form action="/memos/<%= @id %>" method="post">
     <input type="hidden" name="_method" value="delete">
