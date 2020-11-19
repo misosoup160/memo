@@ -3,6 +3,7 @@
     <a href="/memos/new" class="btn">追加</a>
   </div>
 
+  <%= @memos %>
   <ul>
     <% @memos.each do |memo| %>
     <li><a href="memos/<%= memo['memo_id'] %>"><%= memo['memo_title'] %></a></li>

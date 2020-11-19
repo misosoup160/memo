@@ -1,7 +1,7 @@
 <section class="editmemo">
-  <form action="/memos/<%= @comment['id'] %>" method="post">
-    <input type="text" name="title" value="<%= @comment['title'] %>">
-    <textarea name="body"><%= @comment['body'] %></textarea>
+  <form action="/memos/<%= @memo['memo_id'] %>" method="post">
+    <input type="text" name="title" value="<%= @memo['memo_title'] %>">
+    <textarea name="body"><%= @memo['memo_body'] %></textarea>
     
     <input type="hidden" name="_method" value="patch">
     <input type="submit" value="変更" class="btn">
