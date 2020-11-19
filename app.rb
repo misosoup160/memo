@@ -51,6 +51,10 @@ def redirect_to_top
   redirect to('/memos')
 end
 
+get '/' do
+  redirect_to_top
+end
+
 get '/memos' do
   @title = 'memo top'
   openfile
@@ -66,6 +70,8 @@ get '/memos/:id' do
   @title = 'show memo'
   id = params['id']
   select_data(id)
+  return 404 unless @comment
+
   erb :showmemo
 end
 
@@ -73,6 +79,8 @@ get '/memos/:id/edit' do
   @title = 'edit memo'
   id = params['id']
   select_data(id)
+  return 404 unless @comment
+
   erb :editmemo
 end
 
