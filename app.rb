@@ -4,7 +4,7 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'json'
 require 'pg'
-
+require 'dotenv/load'
 
 def set_memos_form_db
   sql = 'SELECT * FROM Memos'
@@ -37,7 +37,10 @@ def delete_data(id)
 end
 
 def connect_data(sql, values = nil)
-  connect = PG.connect(host: 'localhost', user: 'postgres', password: '', dbname: 'memoapp', port: '5432')
+  username = ENV['PG_USERNAME']
+  password = ENV['PG_PASSWORD']
+  db_name = ENV['PG_DBNAME']
+  connect = PG.connect(host: 'localhost', user: username, password: password, dbname: db_name, port: '5432')
   result = connect.exec(sql, values)
   connect.finish
   result
@@ -66,7 +69,7 @@ get '/memos/:id' do
   @title = 'show memo'
   id = params['id']
   select_data(id)
-  return 404 if @memos.values.empty? 
+  return 404 if @memos.values.empty?
 
   erb :showmemo
 end
