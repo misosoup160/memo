@@ -5,17 +5,23 @@ require 'sinatra/reloader'
 require 'json'
 require 'pg'
 
+
+def set_memos_form_db
+  sql = 'SELECT * FROM Memos'
+  @memos = connect_data(sql)
+end
+
+def select_data(id)
+  sql = 'SELECT * FROM Memos WHERE memo_id = $1'
+  @memos = connect_data(sql, [id])
+  @memo = @memos[0]
+end
+
 def new_data(params)
   title = params['title']
   body = params['body']
   sql = 'INSERT INTO Memos (memo_title, memo_body) VALUES ($1, $2)'
   connect_data(sql, [title, body])
-end
-
-def select_data(id)
-  sql = 'SELECT * FROM Memos WHERE memo_id = $1'
-  connect_data(sql, [id])
-  @memo = @memos[0]
 end
 
 def edit_data(id)
@@ -32,12 +38,9 @@ end
 
 def connect_data(sql, values = nil)
   connect = PG.connect(host: 'localhost', user: 'postgres', password: '', dbname: 'memoapp', port: '5432')
-  if sql.include?('SELECT')
-    @memos = connect.exec(sql, values)
-  else
-    connect.exec(sql, values)
-  end
+  result = connect.exec(sql, values)
   connect.finish
+  result
 end
 
 def redirect_to_top
@@ -50,8 +53,7 @@ end
 
 get '/memos' do
   @title = 'memo top'
-  sql = 'SELECT * FROM Memos'
-  connect_data(sql)
+  set_memos_form_db
   erb :index
 end
 
