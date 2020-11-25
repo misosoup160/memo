@@ -1,13 +1,12 @@
 <article class="show">
-  <h2 class="memo-title"><%= Rack::Utils.escape_html(@comment['title']) %></h2>
-  <div class="memo-desc"><%= Rack::Utils.escape_html(@comment['body']) %></div>
-  <div class="btn-container">
-    <form action="/memos/<%= @comment['id'] %>" method="post">
-      <input type="hidden" name="_method" value="delete">
-      <input type="submit" value="削除" class="btn">
-    </form>
-    <div>
-      <a href="/memos/<%= @comment['id'] %>/edit" class="btn">変更</a>
-    </div>
+  <h2 class="memo-title"><%= Rack::Utils.escape_html(@memo['memo_title']) %></h2>
+  <div class="memo-desc"><%= Rack::Utils.escape_html(@memo['memo_body']) %></div>
+<div class="btn-container">
+  <form action="/memos/<%= @memo['memo_id'] %>" method="post">
+    <input type="hidden" name="_method" value="delete">
+    <input type="submit" value="削除" class="btn">
+  </form>
+  <div>
+    <a href="/memos/<%= @memo['memo_id'] %>/edit" class="btn">変更</a>
   </div>
 </article>
